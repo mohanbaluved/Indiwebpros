@@ -8,6 +8,7 @@ import { SplineSceneBasic } from "./components/SplineDemo";
 import { LandingAccordionItem } from "./components/ui/interactive-image-accordion";
 import { ServicesSection } from "./components/ServicesSection";
 import { ProjectShowcase } from "./components/ProjectShowcase";
+import { InsightsSection } from "./components/InsightsSection";
 import { PricingSection } from "./components/PricingSection";
 import { ClientsSectionDemo } from "./components/ClientsSectionDemo";
 import { ContactSection } from "./components/ContactSection";
@@ -51,6 +52,9 @@ export default function App() {
       {/* Project Showcase Section */}
       <ProjectShowcase />
 
+      {/* Insights Section (SEO Content) */}
+      <InsightsSection />
+
       {/* Pricing Section with Scroll Animation */}
       <PricingSection />
 
@@ -82,6 +86,7 @@ export default function App() {
                 {[
                   { name: "Services", href: "#services" },
                   { name: "Portfolio", href: "#portfolio" },
+                  { name: "Insights", href: "#insights" },
                   { name: "Pricing", href: "#pricing" },
                   { name: "Contact", href: "#contact" }
                 ].map((link) => (
