@@ -11,6 +11,8 @@ import { ProjectShowcase } from "./components/ProjectShowcase";
 import { PricingSection } from "./components/PricingSection";
 import { ClientsSectionDemo } from "./components/ClientsSectionDemo";
 import { ContactSection } from "./components/ContactSection";
+import { Twitter, Linkedin, Github, Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
+import { Logo } from "./components/ui/Logo";
 
 export default function App() {
   return (
@@ -59,33 +61,110 @@ export default function App() {
       <ContactSection />
       
       {/* Footer Section */}
-      <footer className="w-full py-20 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <div className="w-2.5 h-2.5 bg-white rounded-full" />
+      <footer className="w-full bg-slate-900 pt-24 pb-12 text-slate-300">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-20">
+            {/* Brand Column */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-2 group cursor-pointer">
+                <Logo className="w-12 h-12 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-white font-bold text-2xl tracking-tight">Indiwebpros</span>
               </div>
-              <span className="text-slate-900 font-bold text-xl tracking-tight">Tech Agency</span>
+              <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
+                Building high-performance digital experiences for students and businesses. We bridge the gap between engineering and design.
+              </p>
             </div>
-            <p className="text-slate-500 text-sm max-w-xs text-center md:text-left leading-relaxed">
-              Building the future of digital experiences with precision and passion.
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/10 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] font-mono font-bold text-emerald-500/80 uppercase tracking-widest">All Systems Operational</span>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-white font-bold mb-8 text-sm uppercase tracking-widest">Quick Links</h4>
+              <ul className="space-y-4">
+                {[
+                  { name: "Services", href: "#services" },
+                  { name: "Portfolio", href: "#portfolio" },
+                  { name: "Pricing", href: "#pricing" },
+                  { name: "Contact", href: "#contact" }
+                ].map((link) => (
+                  <li key={link.name}>
+                    <a href={link.href} className="text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-2 group">
+                      <span className="w-1 h-1 rounded-full bg-slate-700 group-hover:bg-indigo-400 transition-colors" />
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="text-white font-bold mb-8 text-sm uppercase tracking-widest">Services</h4>
+              <ul className="space-y-4">
+                {[
+                  "Web Development",
+                  "AI & ML Solutions",
+                  "Mobile Apps",
+                  "Student Projects",
+                  "Cloud Systems"
+                ].map((service) => (
+                  <li key={service}>
+                    <a href="#services" className="text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-2 group">
+                      <span className="w-1 h-1 rounded-full bg-slate-700 group-hover:bg-indigo-400 transition-colors" />
+                      {service}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h4 className="text-white font-bold mb-8 text-sm uppercase tracking-widest">Get in Touch</h4>
+              <ul className="space-y-6">
+                <li className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Email</p>
+                    <a href="mailto:mohanbalu292@gmail.com" className="text-slate-300 hover:text-white transition-colors">mohanbalu292@gmail.com</a>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Phone</p>
+                    <a href="tel:8074223801" className="text-slate-300 hover:text-white transition-colors">8074223801</a>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-rose-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Location</p>
+                    <p className="text-slate-300">Andhra Pradesh, India</p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-xs">© {new Date().getFullYear()} Tech Agency. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors text-xs">Twitter</a>
-            <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors text-xs">LinkedIn</a>
-            <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors text-xs">GitHub</a>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <p className="text-slate-500 text-xs">© {new Date().getFullYear()} Indiwebpros. All rights reserved.</p>
+              <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/10 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="text-[10px] font-mono font-bold text-emerald-500/80 uppercase tracking-widest">All Systems Operational</span>
+              </div>
+            </div>
+            <div className="flex gap-8">
+              <a href="#" className="text-slate-500 hover:text-white transition-colors text-xs">Privacy Policy</a>
+              <a href="#" className="text-slate-500 hover:text-white transition-colors text-xs">Terms of Service</a>
+              <a href="#" className="text-slate-500 hover:text-white transition-colors text-xs">Cookie Policy</a>
+            </div>
           </div>
         </div>
       </footer>

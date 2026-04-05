@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/src/lib/utils";
+import { Logo } from "./ui/Logo";
 import { Menu, X } from "lucide-react";
 
 export function Navbar() {
@@ -43,11 +44,9 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <div className="w-2.5 h-2.5 bg-white rounded-full" />
-          </div>
-          <span className="text-slate-900 font-bold text-xl tracking-tight">Tech Agency</span>
+        <div className="flex items-center gap-2 group cursor-pointer">
+          <Logo className="w-9 h-9 group-hover:scale-110 transition-transform duration-300" />
+          <span className="text-slate-900 font-bold text-xl tracking-tight">Indiwebpros</span>
         </div>
 
         {/* Desktop Links */}
@@ -71,7 +70,10 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button 
-          className="md:hidden text-white p-2"
+          className={cn(
+            "md:hidden p-2 transition-colors",
+            scrolled ? "text-slate-900" : "text-white"
+          )}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X /> : <Menu />}

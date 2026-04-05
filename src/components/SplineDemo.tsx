@@ -42,6 +42,7 @@ export function SplineSceneBasic() {
               <motion.button 
                 whileHover={{ scale: 1.02, translateY: -2 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-10 py-4 bg-indigo-600 text-white text-sm font-bold rounded-2xl hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-500/20 flex items-center gap-2"
               >
                 Book a Discovery Call
@@ -58,6 +59,7 @@ export function SplineSceneBasic() {
             <motion.button 
               whileHover={{ scale: 1.02, backgroundColor: "rgba(0, 0, 0, 0.02)" }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-10 py-4 bg-white border border-slate-200 text-slate-600 text-sm font-bold rounded-2xl hover:text-slate-900 transition-all"
             >
               View Case Studies

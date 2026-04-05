@@ -81,7 +81,10 @@ export function PricingSection() {
                   </div>
                 ))}
               </div>
-              <button className={`mt-10 w-full py-4 rounded-2xl text-xs font-bold transition-all active:scale-95 shadow-sm ${idx === 1 ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-500/20' : 'bg-slate-900 text-white hover:bg-slate-800 shadow-slate-900/20'}`}>
+              <button 
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className={`mt-10 w-full py-4 rounded-2xl text-xs font-bold transition-all active:scale-95 shadow-sm ${idx === 1 ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-500/20' : 'bg-slate-900 text-white hover:bg-slate-800 shadow-slate-900/20'}`}
+              >
                 Get Started
               </button>
             </div>
@@ -94,7 +97,10 @@ export function PricingSection() {
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Custom Requirement?</h3>
             <p className="text-xs text-slate-500 mb-8 leading-relaxed">We handle complex enterprise needs and unique academic challenges.</p>
-            <button className="px-8 py-3 bg-white border border-slate-200 text-slate-900 text-xs font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+            <button 
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-3 bg-white border border-slate-200 text-slate-900 text-xs font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm active:scale-95"
+            >
               Contact Us
             </button>
           </div>

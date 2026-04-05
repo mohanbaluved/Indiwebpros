@@ -132,8 +132,13 @@ export const ClientsSection = ({
             ))}
           </div>
           <div className="flex items-center gap-4 mt-8">
-            <Button variant="outline" size="lg" className="rounded-full border-slate-200 text-slate-600 hover:bg-slate-50">{secondaryActionLabel}</Button>
-            <Button size="lg" className="rounded-full bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20">{primaryActionLabel}</Button>
+            <Button 
+              size="lg" 
+              className="rounded-full bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              {primaryActionLabel}
+            </Button>
           </div>
         </div>
 

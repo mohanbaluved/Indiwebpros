@@ -34,7 +34,7 @@ export function ClientsSectionDemo() {
   return (
     <ClientsSection
       tagLabel="Happy Clients"
-      title="Clients Love Me"
+      title="Trusted by Our Clients"
       description="Trusted by 25+ happy clients across various industries."
       stats={statsData}
       testimonials={testimonialsData}
