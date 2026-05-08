@@ -1,6 +1,5 @@
 import express from "express";
 import "dotenv/config";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
@@ -24,14 +23,20 @@ apiRouter.options('*', cors());
 
 // Google Sheets Helper (Apps Script Only)
 async function addToGoogleSheet(data: any) {
+  const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL;
+  if (!appsScriptUrl) {
+    console.error("VITE_APPS_SCRIPT_URL is missing in environment variables.");
+    return false;
+  }
+
   try {
-    const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL;
-    if (!appsScriptUrl) {
-      console.error("VITE_APPS_SCRIPT_URL is missing in environment variables.");
-      return false;
+    console.log("Attempting Apps Script Sync to:", appsScriptUrl);
+    
+    // Check if fetch is available (Node 18+)
+    if (typeof fetch === 'undefined') {
+      throw new Error("fetch is not defined. Please ensure you are using Node.js 18 or higher.");
     }
 
-    console.log("Attempting Apps Script Sync...");
     const response = await fetch(appsScriptUrl, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -42,7 +47,8 @@ async function addToGoogleSheet(data: any) {
       console.log("Apps Script Sync Success");
       return true;
     } else {
-      console.warn("Apps Script Sync failed with status:", response.status);
+      const text = await response.text();
+      console.warn("Apps Script Sync failed with status:", response.status, text);
       return false;
     }
   } catch (err) {
@@ -118,7 +124,9 @@ apiRouter.use((err: any, req: any, res: any, next: any) => {
 
 // For local/non-serverless environments
 async function startServer() {
+  const PORT = 3000;
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -126,17 +134,17 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
   }
 
-  if (process.env.NODE_ENV !== "production" || import.meta.url === `file://${fileURLToPath(import.meta.url)}`) {
-     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  }
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 }
 
 if (process.env.NODE_ENV !== "production") {
