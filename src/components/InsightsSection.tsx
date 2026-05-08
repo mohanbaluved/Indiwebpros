@@ -59,14 +59,6 @@ export function InsightsSection() {
               Expert perspectives on technology, business growth, and educational excellence to help you stay ahead of the curve.
             </motion.p>
           </div>
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-2 text-indigo-600 font-bold hover:gap-4 transition-all"
-          >
-            Explore All Insights <ArrowRight className="w-5 h-5" />
-          </motion.button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
