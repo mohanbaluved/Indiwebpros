@@ -20,19 +20,19 @@ export function ContactSection() {
     };
 
     try {
-      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeoca_n5-hF0L5jCeD4vbX8mM0Qn4yEJeuFDyENNwogKPKCTR2c7LD0If0J8Bgarowjg/exec';
-      
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        mode: 'no-cors', // Required for Google Apps Script
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
-      // With no-cors, we can't check response.ok, so we assume success if no error is thrown
-      setStatus('success');
-      // Reset after 5 seconds
-      setTimeout(() => setStatus('idle'), 5000);
+      if (response.ok) {
+        setStatus('success');
+        // Reset after 5 seconds
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        throw new Error('Server responded with error');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       setStatus('idle');
