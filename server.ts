@@ -3,8 +3,8 @@ import "dotenv/config";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { fileURLToPath } from "url";
+import { addToGoogleSheet } from "./src/lib/sheets.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,67 +12,47 @@ const __dirname = path.dirname(__filename);
 export const app = express();
 const PORT = 3000;
 
+// Standard Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // API Router
 const apiRouter = express.Router();
 
-apiRouter.use(cors());
-apiRouter.use(bodyParser.json());
-
-// Handle OPTIONS preflight
-apiRouter.options('*', cors());
-
-// Google Sheets Helper (Apps Script Only)
-async function addToGoogleSheet(data: any) {
-  const appsScriptUrl = process.env.VITE_APPS_SCRIPT_URL;
-  if (!appsScriptUrl) {
-    console.error("VITE_APPS_SCRIPT_URL is missing in environment variables.");
-    return false;
-  }
-
-  try {
-    console.log("Attempting Apps Script Sync to:", appsScriptUrl);
-    
-    // Check if fetch is available (Node 18+)
-    if (typeof fetch === 'undefined') {
-      throw new Error("fetch is not defined. Please ensure you are using Node.js 18 or higher.");
-    }
-
-    const response = await fetch(appsScriptUrl, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (response.ok) {
-      console.log("Apps Script Sync Success");
-      return true;
-    } else {
-      const text = await response.text();
-      console.warn("Apps Script Sync failed with status:", response.status, text);
-      return false;
-    }
-  } catch (err) {
-    console.error("Error connecting to Apps Script:", err);
-    return false;
-  }
-}
-
 // Health Check
 apiRouter.get("/health", (req, res) => {
-  res.json({ status: "ok", env: process.env.NODE_ENV });
+  res.json({ 
+    status: "ok", 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    hasUrl: !!(process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL)
+  });
 });
 
 // API: Save Contact Form
 apiRouter.post("/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
     const date = new Date().toISOString();
+    const result = await addToGoogleSheet({ 
+      Date: date, 
+      Source: 'Contact Form', 
+      Name: name || 'Anonymous', 
+      Email: email, 
+      Message: message || '' 
+    });
     
-    await addToGoogleSheet({ Date: date, Source: 'Contact Form', Name: name, Email: email, Message: message });
-    res.json({ success: true });
-  } catch (error) {
+    res.json({ 
+      success: true, 
+      sync: result.success,
+      warning: result.success ? null : result.error
+    });
+  } catch (error: any) {
     console.error("Critical error in /api/contact:", error);
-    res.status(500).json({ error: "Internal Server Error", details: String(error) });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 
@@ -80,24 +60,35 @@ apiRouter.post("/contact", async (req, res) => {
 apiRouter.post("/internship-apply", async (req, res) => {
   try {
     const data = req.body;
+    if (!data.email) return res.status(400).json({ error: "Email is required" });
+
     const date = new Date().toISOString();
     
-    console.log("Processing internship application...");
+    console.log("Processing internship application for:", data.email);
     
-    const success = await addToGoogleSheet({
-      Date: date, Source: 'Internship Application', Name: data.fullName, Email: data.email, Phone: data.phone,
-      WhatsApp: data.whatsapp, College: data.college, Degree: data.degree, Year: data.year, Domain: data.domain,
-      Skills: data.skills, Reason: data.reason
+    const result = await addToGoogleSheet({
+      Date: date, 
+      Source: 'Internship Application', 
+      Name: data.fullName || 'Anonymous', 
+      Email: data.email, 
+      Phone: data.phone || '',
+      WhatsApp: data.whatsapp || '', 
+      College: data.college || '', 
+      Degree: data.degree || '', 
+      Year: data.year || '', 
+      Domain: data.domain || '',
+      Skills: data.skills || '', 
+      Reason: data.reason || ''
     });
 
-    if (!success) {
-      console.warn("Failed to write to Google Sheets, but continuing...");
-    }
-
-    res.json({ success: true });
-  } catch (error) {
+    res.json({ 
+      success: true, 
+      sync: result.success,
+      warning: result.success ? null : result.error
+    });
+  } catch (error: any) {
     console.error("Critical error in /api/internship-apply:", error);
-    res.status(500).json({ error: "Internal Server Error", details: String(error) });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 
@@ -117,14 +108,13 @@ apiRouter.get("/export", (req, res) => {
 app.use("/api", apiRouter);
 
 // Global Error Handler for API
-apiRouter.use((err: any, req: any, res: any, next: any) => {
-  console.error("API Global Error:", err);
-  res.status(500).json({ error: "Internal Server Error", message: err.message });
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error("Global Error:", err);
+  res.status(500).json({ error: "Critical Server Error", message: err.message });
 });
 
 // For local/non-serverless environments
 async function startServer() {
-  const PORT = 3000;
   if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({

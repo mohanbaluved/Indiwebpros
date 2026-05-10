@@ -11,12 +11,16 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@google/genai": "^1.29.0",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-slot": "^1.2.4",
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^1.12.74",
+    "@supabase/supabase-js": "^2.105.4",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "body-parser": "^2.2.2",
@@ -35,8 +39,10 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
+    "@vercel/node": "^5.7.15",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
