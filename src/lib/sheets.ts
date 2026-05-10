@@ -1,8 +1,9 @@
-import { supabase } from './supabase';
+import { getSupabase } from './supabase.js';
 
 // Shared utility for saving to Supabase
 export async function saveToSupabase(data: any) {
   try {
+    const supabase = getSupabase();
     let table = '';
     let payload = {};
 
