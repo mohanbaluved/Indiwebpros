@@ -6,29 +6,32 @@ export function getSupabase() {
   if (supabaseClient) return supabaseClient;
 
   try {
-    let supabaseUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
-    let supabaseAnonKey = (process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '').trim();
+    // Check both process.env (Node) and import.meta.env (Vite) for maximum compatibility 
+    // across server-side and browser execution contexts.
+    const url = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
+    const key = process.env.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-    // Aggressively remove any hidden non-ASCII characters (like bullets • or smart quotes)
-    // that might be accidentally pasted into environment variables.
+    let supabaseUrl = typeof url === 'string' ? url.trim() : '';
+    let supabaseAnonKey = typeof key === 'string' ? key.trim() : '';
+
+    // Aggressively remove any hidden non-ASCII characters that might be accidentally pasted
     supabaseUrl = supabaseUrl.replace(/[^\x21-\x7E]/g, '');
     supabaseAnonKey = supabaseAnonKey.replace(/[^\x21-\x7E]/g, '');
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error(`Supabase Credentials Status: URL=${supabaseUrl ? 'SET' : 'MISSING'}, KEY=${supabaseAnonKey ? 'SET' : 'MISSING'}`);
-      throw new Error('Supabase credentials missing. Ensure SUPABASE_URL and SUPABASE_ANON_KEY are set.');
+      const status = `URL=${supabaseUrl ? 'PRESENT' : 'MISSING'}, KEY=${supabaseAnonKey ? 'PRESENT' : 'MISSING'}`;
+      console.error(`Supabase Config Check: ${status}`);
+      throw new Error(`Supabase credentials missing (${status}). Please check your environment variables in Settings.`);
     }
 
-    // Ensure URL is valid and starts with https
-    if (supabaseUrl && !supabaseUrl.startsWith('http')) {
+    if (!supabaseUrl.startsWith('http')) {
       supabaseUrl = `https://${supabaseUrl}`;
     }
 
-    console.log(`Initializing Supabase with URL: ${supabaseUrl}`);
     supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
     return supabaseClient;
   } catch (err: any) {
-    console.error("Critical error initializing Supabase:", err);
+    console.error("Critical error in getSupabase:", err.message);
     throw err;
   }
 }
