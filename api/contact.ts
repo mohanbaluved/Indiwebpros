@@ -21,10 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     if (!result.success) {
       console.error("Database sync failed:", result.error);
-      // Return 200 but with sync: false so the user can still see success on UI
-      // but developers know something is wrong.
-      return res.status(200).json({ 
-        success: true, 
+      return res.status(500).json({ 
+        success: false, 
         sync: false,
         error: result.error 
       });
@@ -36,6 +34,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error("Critical error in /api/contact:", error);
-    return res.status(500).json({ error: "Internal Server Error", message: error.message });
+    return res.status(500).json({ 
+      success: false, 
+      error: "Internal Server Error", 
+      message: error.message
+    });
   }
 }

@@ -79,6 +79,7 @@ const SectionHeading = ({ title, subtitle, description, light = false }: { title
 export function InternshipSection() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -116,14 +117,18 @@ export function InternshipSection() {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setFormStatus("success");
       } else {
         setFormStatus("error");
+        setErrorMessage(result.error || result.message || "Unknown server error");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Submission error:", err);
       setFormStatus("error");
+      setErrorMessage(err.message || "Connection failure");
     }
   };
 
@@ -759,10 +764,13 @@ export function InternshipSection() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="bg-rose-50 p-12 text-center border border-rose-100"
                 >
-                  <h3 className="text-xl font-display font-medium text-slate-900 mb-4 tracking-tight">Transmission Failed</h3>
+                  <h3 className="text-xl font-display font-medium text-slate-900 mb-2 tracking-tight">Transmission Failed</h3>
+                  <p className="text-rose-600 text-sm font-light mb-8 max-w-sm mx-auto">
+                    {errorMessage}
+                  </p>
                   <button 
                     onClick={() => setFormStatus("idle")}
-                    className="mt-10 px-8 py-4 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest"
+                    className="mt-2 px-8 py-4 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest"
                   >
                     Retry
                   </button>

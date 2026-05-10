@@ -31,8 +31,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!result.success) {
       console.error("Database sync failed (Internship):", result.error);
-      return res.status(200).json({ 
-        success: true, 
+      return res.status(500).json({ 
+        success: false, 
         sync: false,
         error: result.error 
       });
@@ -44,6 +44,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error("Critical error in /api/internship-apply:", error);
-    return res.status(500).json({ error: "Internal Server Error", message: error.message });
+    return res.status(500).json({ 
+      success: false, 
+      error: "Internal Server Error", 
+      message: error.message
+    });
   }
 }

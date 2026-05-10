@@ -5,7 +5,8 @@ import { motion } from "motion/react";
 import { ArrowRight, Mail, MapPin, Phone, CheckCircle2, Loader2 } from "lucide-react";
 
 export function ContactSection() {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,17 +27,20 @@ export function ContactSection() {
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setStatus('success');
-        // Reset after 5 seconds
-        setTimeout(() => setStatus('idle'), 5000);
+        // Reset after 10 seconds if successful
+        setTimeout(() => setStatus('idle'), 10000);
       } else {
-        throw new Error('Server responded with error');
+        setStatus('error');
+        setErrorMessage(result.error || result.message || 'Server error occurred');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error);
-      setStatus('idle');
-      alert('Something went wrong. Please try again.');
+      setStatus('error');
+      setErrorMessage(error.message || 'Connection failure');
     }
   };
 
@@ -130,6 +134,24 @@ export function ContactSection() {
                   className="mt-8 text-sm font-bold text-indigo-600 hover:text-indigo-500"
                 >
                   Send another message
+                </button>
+              </motion.div>
+            ) : status === 'error' ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="h-full flex flex-col items-center justify-center text-center py-12"
+              >
+                <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                  <Mail className="w-10 h-10 text-rose-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Transmission Failed</h3>
+                <p className="text-rose-500 mb-8">{errorMessage}</p>
+                <button 
+                  onClick={() => setStatus('idle')}
+                  className="px-8 py-4 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest rounded-2xl"
+                >
+                  Try Again
                 </button>
               </motion.div>
             ) : (

@@ -47,8 +47,8 @@ apiRouter.post("/contact", async (req, res) => {
     
     if (!result.success) {
       console.error("Local sync failed:", result.error);
-      return res.json({ 
-        success: true, 
+      return res.status(500).json({ 
+        success: false, 
         sync: false,
         error: result.error 
       });
@@ -91,8 +91,8 @@ apiRouter.post("/internship-apply", async (req, res) => {
 
     if (!result.success) {
       console.error("Local sync failed (Internship):", result.error);
-      return res.json({ 
-        success: true, 
+      return res.status(500).json({ 
+        success: false, 
         sync: false,
         error: result.error 
       });
