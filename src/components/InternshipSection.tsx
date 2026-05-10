@@ -111,9 +111,13 @@ export function InternshipSection() {
     setFormStatus("submitting");
     
     try {
-      const response = await fetch("/api/internship-apply", {
+      const apiUrl = "/api/internship-apply";
+      const response = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify(formData),
       });
 
@@ -134,7 +138,7 @@ export function InternshipSection() {
 
   const faqs = [
     { q: "Is the internship online?", a: "Yes, the internship is fully virtual, allowing students from anywhere to participate." },
-    { q: "Will certificates be provided?", a: "Absolutly! Upon successful completion, you will receive an official Internship Completion Certificate." },
+    { q: "Will certificates be provided?", a: "Absolutely! Upon successful completion, you will receive an official Internship Completion Certificate." },
     { q: "Is prior experience required?", a: "While basic understanding is helpful, our program is designed for students and beginners with an eager mind to learn." },
     { q: "Are projects included?", a: "Yes, the entire program is project-based. You will work on real-time industry-standard projects." },
     { q: "What is the duration of the internship?", a: "The program spans 8 weeks, covering everything from fundamentals to final project presentation." },
