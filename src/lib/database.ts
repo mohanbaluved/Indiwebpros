@@ -1,7 +1,7 @@
-import { getSupabase } from './supabase';
+import { getSupabase } from './supabase.js';
 
-// Shared utility for saving to Supabase
-export async function saveToSupabase(data: any) {
+// Shared utility for saving to Database (Supabase)
+export async function saveToDatabase(data: any) {
   try {
     const supabase = getSupabase();
     let table = '';
@@ -34,7 +34,7 @@ export async function saveToSupabase(data: any) {
       throw new Error(`Unknown source: ${data.Source}`);
     }
 
-    console.log(`Syncing to Supabase table: ${table}...`);
+    console.log(`Syncing to Database table: ${table}...`);
     console.log(`Payload being sent:`, JSON.stringify(payload));
     
     const { error } = await supabase
@@ -42,17 +42,14 @@ export async function saveToSupabase(data: any) {
       .insert([payload]);
 
     if (error) {
-      console.error(`Supabase Insert Error into ${table}:`, error);
+      console.error(`Database Insert Error into ${table}:`, error);
       return { success: false, error: error.message, code: error.code };
     }
 
-    console.log("Supabase Sync Success");
+    console.log("Database Sync Success");
     return { success: true };
   } catch (err: any) {
-    console.error("Error in saveToSupabase:", err);
+    console.error("Error in saveToDatabase:", err);
     return { success: false, error: err.message || "Unknown connection failure" };
   }
 }
-
-// Keeping the old name as an alias for compatibility during migration
-export const addToGoogleSheet = saveToSupabase;

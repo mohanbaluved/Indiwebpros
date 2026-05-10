@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { addToGoogleSheet } from '../src/lib/sheets';
+import { saveToDatabase } from '../src/lib/database.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -11,7 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!email) return res.status(400).json({ error: "Email is required" });
 
     const date = new Date().toISOString();
-    const result = await addToGoogleSheet({ 
+    const result = await saveToDatabase({ 
       Date: date, 
       Source: 'Contact Form', 
       Name: name || 'Anonymous', 
@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
     
     if (!result.success) {
-      console.error("Supabase sync failed:", result.error);
+      console.error("Database sync failed:", result.error);
       // Return 200 but with sync: false so the user can still see success on UI
       // but developers know something is wrong.
       return res.status(200).json({ 

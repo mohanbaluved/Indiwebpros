@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { addToGoogleSheet } from '../src/lib/sheets';
+import { saveToDatabase } from '../src/lib/database.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -14,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     console.log("Processing internship application for:", data.email);
     
-    const result = await addToGoogleSheet({
+    const result = await saveToDatabase({
       Date: date, 
       Source: 'Internship Application', 
       Name: data.fullName || 'Anonymous', 
@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!result.success) {
-      console.error("Supabase sync failed (Internship):", result.error);
+      console.error("Database sync failed (Internship):", result.error);
       return res.status(200).json({ 
         success: true, 
         sync: false,

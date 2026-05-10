@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import cors from "cors";
 import { fileURLToPath } from "url";
-import { addToGoogleSheet } from "./src/lib/sheets";
+import { saveToDatabase } from "./src/lib/database";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +37,7 @@ apiRouter.post("/contact", async (req, res) => {
     if (!email) return res.status(400).json({ error: "Email is required" });
 
     const date = new Date().toISOString();
-    const result = await addToGoogleSheet({ 
+    const result = await saveToDatabase({ 
       Date: date, 
       Source: 'Contact Form', 
       Name: name || 'Anonymous', 
@@ -74,7 +74,7 @@ apiRouter.post("/internship-apply", async (req, res) => {
     
     console.log("Processing internship application for:", data.email);
     
-    const result = await addToGoogleSheet({
+    const result = await saveToDatabase({
       Date: date, 
       Source: 'Internship Application', 
       Name: data.fullName || 'Anonymous', 
