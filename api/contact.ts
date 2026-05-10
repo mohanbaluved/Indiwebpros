@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { addToGoogleSheet } from '../src/lib/sheets.js';
+import { addToGoogleSheet } from '../src/lib/sheets';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -19,13 +19,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       Message: message || '' 
     });
     
+    if (!result.success) {
+      console.error("Supabase sync failed:", result.error);
+      // Return 200 but with sync: false so the user can still see success on UI
+      // but developers know something is wrong.
+      return res.status(200).json({ 
+        success: true, 
+        sync: false,
+        error: result.error 
+      });
+    }
+
     return res.status(200).json({ 
       success: true, 
-      sync: result.success,
-      warning: result.success ? null : result.error
+      sync: true
     });
   } catch (error: any) {
     console.error("Critical error in /api/contact:", error);
-    return res.status(500).json({ error: "Internal Server Error", details: error.message });
+    return res.status(500).json({ error: "Internal Server Error", message: error.message });
   }
 }

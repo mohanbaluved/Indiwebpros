@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import cors from "cors";
 import { fileURLToPath } from "url";
-import { addToGoogleSheet } from "./src/lib/sheets.js";
+import { addToGoogleSheet } from "./src/lib/sheets";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +26,7 @@ apiRouter.get("/health", (req, res) => {
     status: "ok", 
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV,
-    hasUrl: !!(process.env.VITE_APPS_SCRIPT_URL || process.env.APPS_SCRIPT_URL)
+    hasSupabase: !!(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL)
   });
 });
 
@@ -45,14 +45,22 @@ apiRouter.post("/contact", async (req, res) => {
       Message: message || '' 
     });
     
+    if (!result.success) {
+      console.error("Local sync failed:", result.error);
+      return res.json({ 
+        success: true, 
+        sync: false,
+        error: result.error 
+      });
+    }
+
     res.json({ 
       success: true, 
-      sync: result.success,
-      warning: result.success ? null : result.error
+      sync: true
     });
   } catch (error: any) {
     console.error("Critical error in /api/contact:", error);
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    res.status(500).json({ error: "Internal Server Error", message: error.message });
   }
 });
 
@@ -81,14 +89,22 @@ apiRouter.post("/internship-apply", async (req, res) => {
       Reason: data.reason || ''
     });
 
+    if (!result.success) {
+      console.error("Local sync failed (Internship):", result.error);
+      return res.json({ 
+        success: true, 
+        sync: false,
+        error: result.error 
+      });
+    }
+
     res.json({ 
       success: true, 
-      sync: result.success,
-      warning: result.success ? null : result.error
+      sync: true
     });
   } catch (error: any) {
     console.error("Critical error in /api/internship-apply:", error);
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    res.status(500).json({ error: "Internal Server Error", message: error.message });
   }
 });
 
