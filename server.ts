@@ -149,10 +149,17 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server starting on port ${PORT}...`);
+    console.log(`Current Working Directory: ${process.cwd()}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    
+    const envKeys = Object.keys(process.env);
+    const supabaseKeys = envKeys.filter(k => k.includes('SUPABASE'));
+    console.log(`Available Supabase-related Env Vars: ${supabaseKeys.join(', ') || 'NONE'}`);
+    
+    if (process.env.SUPABASE_URL) console.log('SUPABASE_URL is set in process.env');
+    if (process.env.SUPABASE_ANON_KEY) console.log('SUPABASE_ANON_KEY is set in process.env');
   });
 }
 
-if (process.env.NODE_ENV !== "production") {
-  startServer();
-}
+startServer();

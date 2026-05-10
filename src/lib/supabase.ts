@@ -6,15 +6,16 @@ export function getSupabase() {
   if (supabaseClient) return supabaseClient;
 
   try {
-    // Check both process.env (Node) and import.meta.env (Vite) for maximum compatibility 
-    // across server-side and browser execution contexts.
-    const url = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
-    const key = process.env.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+    const metaEnv = (import.meta as any).env || {};
+    
+    // Direct check of process.env for Node, and import.meta.env for bundle
+    let url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || metaEnv.VITE_SUPABASE_URL || '';
+    let key = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || metaEnv.VITE_SUPABASE_ANON_KEY || '';
 
-    let supabaseUrl = typeof url === 'string' ? url.trim() : '';
-    let supabaseAnonKey = typeof key === 'string' ? key.trim() : '';
+    let supabaseUrl = String(url).trim();
+    let supabaseAnonKey = String(key).trim();
 
-    // Aggressively remove any hidden non-ASCII characters that might be accidentally pasted
+    // Aggressively remove any hidden non-ASCII characters
     supabaseUrl = supabaseUrl.replace(/[^\x21-\x7E]/g, '');
     supabaseAnonKey = supabaseAnonKey.replace(/[^\x21-\x7E]/g, '');
 

@@ -146,7 +146,7 @@ export function Navbar() {
                 </Link>
               </motion.div>
               <div className="mt-8 flex justify-center gap-6 text-white/40">
-                <p className="text-xs font-medium tracking-widest uppercase">Innovation • Reliability • Growth</p>
+                <p className="text-xs font-medium tracking-widest uppercase">Innovation | Reliability | Growth</p>
               </div>
             </div>
           </motion.div>
